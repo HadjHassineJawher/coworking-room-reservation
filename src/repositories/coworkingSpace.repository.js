@@ -1,5 +1,4 @@
 const CoworkingSpace = require('../models/coworkingSpace.model');
-
 class CoworkingSpaceRepository {
   async create(coworkingSpaceData) {
     try {

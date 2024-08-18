@@ -1,5 +1,4 @@
 const userService = require('../services/user.service');
-
 class UserController {
   async createUser(req, res) {
     try {
@@ -11,6 +10,24 @@ class UserController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error creating user' });
+    }
+  }
+
+  async joinCoworkingSpace(req, res) {
+    try {
+      const { userId, coworkingSpaceId, code } = req.body;
+      const user = await userService.joinCoworkingSpace(
+        userId,
+        coworkingSpaceId,
+        code,
+      );
+      res.status(200).json({
+        message: 'Joined coworking space successfully',
+        user,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({ message: error.message });
     }
   }
 }

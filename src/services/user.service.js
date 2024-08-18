@@ -28,6 +28,18 @@ class UserService {
       throw new Error('Error creating user: ' + error.message);
     }
   }
+
+  async joinCoworkingSpace(userId, coworkingSpaceId, code) {
+    try {
+      return await userRepository.joinCoworkingSpace(
+        userId,
+        coworkingSpaceId,
+        code,
+      );
+    } catch (error) {
+      throw new Error('Error joining coworking space: ' + error.message);
+    }
+  }
 }
 
 module.exports = new UserService();
