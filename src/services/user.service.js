@@ -46,7 +46,7 @@ class UserService {
         throw new Error('User is already a member of this coworking space');
       }
 
-      return await userRepository.addCoworkingSpace(user, {
+      return await userRepository.joinCoworkingSpace(user, {
         coworkingSpaceId,
         joinedAt: new Date(),
       });
@@ -57,7 +57,7 @@ class UserService {
 
   async getUserCoworkingSpaces(userId) {
     try {
-      const user = await userRepository.getUserWithCoworkingSpaces(userId);
+      const user = await userRepository.getUserCoworkingSpaces(userId);
       if (!user) {
         throw new Error('User not found');
       }

@@ -9,12 +9,12 @@ class UserRepository {
     return await User.findById(userId);
   }
 
-  async addCoworkingSpace(user, coworkingSpaceData) {
+  async joinCoworkingSpace(user, coworkingSpaceData) {
     user.coworkingSpaces.push(coworkingSpaceData);
     return await user.save();
   }
 
-  async getUserWithCoworkingSpaces(userId) {
+  async getUserCoworkingSpaces(userId) {
     return await User.findById(userId).populate(
       'coworkingSpaces.coworkingSpaceId',
     );
