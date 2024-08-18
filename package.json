@@ -4,24 +4,36 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node index",
+    "dev": "nodemon index",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "*.js": "eslint --fix"
+  },
   "keywords": [],
-  "author": "",
+  "author": "Hadj Hassine Jawher",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.19.2"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.5.3",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@eslint/js": "^9.9.0",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
-    "husky": "^8.0.0",
-    "nodemon": "^3.1.4"
+    "husky": "^8.0.3",
+    "nodemon": "^3.1.4",
+    "open": "^10.1.0"
   }
 }

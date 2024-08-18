@@ -1,0 +1,40 @@
+body,
+h1,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  padding: 20px;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+main p {
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+header h1 {
+  font-size: 2rem;
+}

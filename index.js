@@ -1,11 +1,41 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5000;
+const { exec } = require('child_process');
+const app = require('./src/index');
+const config = require('./src/config/env.config');
+const connectDB = require('./src/config/database.config');
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
+const startServer = async () => {
+  try {
+    await connectDB();
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+    const server = app.listen(config.port, () => {
+      console.log(
+        `Server is running in ${config.nodeEnv} mode on port ${config.port}`,
+      );
+
+      if (config.nodeEnv !== 'development') {
+        exec(`start http://localhost:${config.port}`);
+      }
+    });
+
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM signal received. Closing server...');
+      server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+      });
+    });
+
+    process.on('SIGINT', () => {
+      console.log('SIGINT signal received. Closing server...');
+      server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+      });
+    });
+  } catch (error) {
+    console.error('Failed to start the server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
