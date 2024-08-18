@@ -17,7 +17,9 @@ const coworkingSpaceSchema = new mongoose.Schema(
     },
     code: {
       type: String,
-      required: true,
+      required: function () {
+        return this.type === 'Private';
+      },
       unique: true,
       trim: true,
       match: /^[A-Z0-9]{6,12}$/,
@@ -39,6 +41,12 @@ const coworkingSpaceSchema = new mongoose.Schema(
         trim: true,
         match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       },
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ['Public', 'Private'],
+      default: 'Public',
     },
   },
   { timestamps: true },
