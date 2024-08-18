@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/user.repository');
-
+const CoworkingSpace = require('../models/coworkingSpace.model');
 class UserService {
   async hashPassword(password) {
     try {
@@ -14,15 +14,12 @@ class UserService {
   async createUser(userData) {
     try {
       const hashedPassword = await this.hashPassword(userData.password);
-
       const user = await userRepository.create({
         ...userData,
         password: hashedPassword,
       });
-
       const userObject = user.toObject();
       delete userObject.password;
-
       return userObject;
     } catch (error) {
       throw new Error('Error creating user: ' + error.message);
@@ -31,11 +28,28 @@ class UserService {
 
   async joinCoworkingSpace(userId, coworkingSpaceId, code) {
     try {
-      return await userRepository.joinCoworkingSpace(
-        userId,
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const coworkingSpace = await CoworkingSpace.findById(coworkingSpaceId);
+      if (!coworkingSpace) {
+        throw new Error('Coworking space not found');
+      }
+
+      if (coworkingSpace.type === 'Private' && coworkingSpace.code !== code) {
+        throw new Error('Invalid code for private coworking space');
+      }
+
+      if (this.isUserAlreadyMember(user, coworkingSpaceId)) {
+        throw new Error('User is already a member of this coworking space');
+      }
+
+      return await userRepository.addCoworkingSpace(user, {
         coworkingSpaceId,
-        code,
-      );
+        joinedAt: new Date(),
+      });
     } catch (error) {
       throw new Error('Error joining coworking space: ' + error.message);
     }
@@ -43,12 +57,24 @@ class UserService {
 
   async getUserCoworkingSpaces(userId) {
     try {
-      return await userRepository.getUserCoworkingSpaces(userId);
+      const user = await userRepository.getUserWithCoworkingSpaces(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      return user.coworkingSpaces;
     } catch (error) {
       throw new Error(
         'Error retrieving user coworking spaces: ' + error.message,
       );
     }
+  }
+
+  isUserAlreadyMember(user, coworkingSpaceId) {
+    return user.coworkingSpaces.some(
+      (cs) =>
+        cs.coworkingSpaceId &&
+        cs.coworkingSpaceId.toString() === coworkingSpaceId.toString(),
+    );
   }
 }
 
