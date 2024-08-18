@@ -40,6 +40,16 @@ class UserService {
       throw new Error('Error joining coworking space: ' + error.message);
     }
   }
+
+  async getUserCoworkingSpaces(userId) {
+    try {
+      return await userRepository.getUserCoworkingSpaces(userId);
+    } catch (error) {
+      throw new Error(
+        'Error retrieving user coworking spaces: ' + error.message,
+      );
+    }
+  }
 }
 
 module.exports = new UserService();

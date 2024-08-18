@@ -30,6 +30,16 @@ class UserController {
       res.status(400).json({ message: error.message });
     }
   }
+
+  async getUserCoworkingSpaces(req, res) {
+    try {
+      const userId = req.params.userId;
+      const coworkingSpaces = await userService.getUserCoworkingSpaces(userId);
+      res.status(200).json(coworkingSpaces);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new UserController();

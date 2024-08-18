@@ -42,6 +42,22 @@ class UserRepository {
       throw new Error('Error joining coworking space: ' + error.message);
     }
   }
+
+  async getUserCoworkingSpaces(userId) {
+    try {
+      const user = await User.findById(userId).populate(
+        'coworkingSpaces.coworkingSpaceId',
+      );
+      if (!user) {
+        throw new Error('User not found');
+      }
+      return user.coworkingSpaces;
+    } catch (error) {
+      throw new Error(
+        'Error retrieving user coworking spaces: ' + error.message,
+      );
+    }
+  }
 }
 
 module.exports = new UserRepository();
