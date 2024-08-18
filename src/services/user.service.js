@@ -77,14 +77,26 @@ class UserService {
     );
   }
 
-  async updateUser(userId, userData) {
+  async updateUser(userId, userData, profileImage) {
     try {
+      if (profileImage) {
+        userData.profileImage = {
+          data: profileImage.buffer,
+          contentType: profileImage.mimetype,
+        };
+      }
       const updatedUser = await userRepository.updateUser(userId, userData);
       if (!updatedUser) {
         throw new Error('User not found');
       }
       const userObject = updatedUser.toObject();
       delete userObject.password;
+
+      if (userObject.profileImage && userObject.profileImage.data) {
+        userObject.profileImage.data =
+          userObject.profileImage.data.toString('base64');
+      }
+
       return userObject;
     } catch (error) {
       throw new Error('Error updating user: ' + error.message);

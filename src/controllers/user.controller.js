@@ -49,7 +49,11 @@ class UserController {
         lastName: req.body.lastName,
         email: req.body.email,
       };
-      const updatedUser = await userService.updateUser(userId, updateData);
+      const updatedUser = await userService.updateUser(
+        userId,
+        updateData,
+        req.file,
+      );
       res.status(200).json({
         message: 'User updated successfully',
         user: updatedUser,
