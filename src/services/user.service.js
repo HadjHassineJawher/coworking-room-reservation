@@ -76,6 +76,20 @@ class UserService {
         cs.coworkingSpaceId.toString() === coworkingSpaceId.toString(),
     );
   }
+
+  async updateUser(userId, userData) {
+    try {
+      const updatedUser = await userRepository.updateUser(userId, userData);
+      if (!updatedUser) {
+        throw new Error('User not found');
+      }
+      const userObject = updatedUser.toObject();
+      delete userObject.password;
+      return userObject;
+    } catch (error) {
+      throw new Error('Error updating user: ' + error.message);
+    }
+  }
 }
 
 module.exports = new UserService();

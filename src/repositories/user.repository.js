@@ -19,6 +19,13 @@ class UserRepository {
       'coworkingSpaces.coworkingSpaceId',
     );
   }
+
+  async updateUser(userId, userData) {
+    return await User.findByIdAndUpdate(userId, userData, {
+      new: true,
+      runValidators: true,
+    });
+  }
 }
 
 module.exports = new UserRepository();

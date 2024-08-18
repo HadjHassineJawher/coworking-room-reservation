@@ -8,5 +8,6 @@ router.get(
   '/users/:userId/coworking-spaces',
   userController.getUserCoworkingSpaces,
 );
+router.patch('/users/:userId', userController.updateUser);
 
 module.exports = router;
