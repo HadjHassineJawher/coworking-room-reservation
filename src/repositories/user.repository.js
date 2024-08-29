@@ -26,6 +26,10 @@ class UserRepository {
       runValidators: true,
     });
   }
+
+  async findByEmail(email) {
+    return await User.findOne({ email });
+  }
 }
 
 module.exports = new UserRepository();

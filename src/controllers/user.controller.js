@@ -1,4 +1,5 @@
 const userService = require('../services/user.service');
+
 class UserController {
   async createUser(req, res) {
     try {
@@ -57,6 +58,25 @@ class UserController {
     } catch (error) {
       console.error(error);
       res.status(400).json({ message: error.message });
+    }
+  }
+
+  async loginUser(req, res) {
+    try {
+      const { email, password } = req.body;
+      const { user, token } = await userService.authenticateUser(
+        email,
+        password,
+      );
+
+      res.status(200).json({
+        message: 'Login successful',
+        user,
+        token,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error during login' });
     }
   }
 }

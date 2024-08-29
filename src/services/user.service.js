@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/user.repository');
 const CoworkingSpace = require('../models/coworkingSpace.model');
+const { generateToken } = require('../utils/jwt.utils');
+
 class UserService {
   async hashPassword(password) {
     try {
@@ -8,6 +10,14 @@ class UserService {
       return await bcrypt.hash(password, salt);
     } catch (error) {
       throw new Error('Error hashing password: ' + error.message);
+    }
+  }
+
+  async comparePassword(providedPassword, storedPassword) {
+    try {
+      return await bcrypt.compare(providedPassword, storedPassword);
+    } catch (error) {
+      throw new Error('Error comparing passwords: ' + error.message);
     }
   }
 
@@ -88,6 +98,28 @@ class UserService {
       return userObject;
     } catch (error) {
       throw new Error('Error updating user: ' + error.message);
+    }
+  }
+
+  async authenticateUser(email, password) {
+    try {
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isMatch = await this.comparePassword(password, user.password);
+      if (!isMatch) {
+        throw new Error('Invalid credentials');
+      }
+
+      const userObject = user.toObject();
+      delete userObject.password;
+
+      const token = generateToken(userObject);
+      return { user: userObject, token };
+    } catch (error) {
+      throw new Error('Authentication error: ' + error.message);
     }
   }
 }

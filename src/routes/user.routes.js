@@ -9,5 +9,6 @@ router.get(
   userController.getUserCoworkingSpaces,
 );
 router.patch('/users/:userId', userController.updateUser);
+router.post('/login', userController.loginUser);
 
 module.exports = router;
