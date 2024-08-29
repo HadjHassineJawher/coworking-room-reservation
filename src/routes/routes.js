@@ -4,10 +4,10 @@ const router = express.Router();
 const userRoutes = require('./user.routes');
 const coworkingSpaceRoutes = require('./coworkingSpace.routes');
 
-router.use(express.static(path.join(__dirname, '../public')));
+router.use(express.static(path.join(__dirname, '../../public')));
 
 router.get('/', (req, res) => {
-  const filePath = path.resolve(__dirname, '../public/index.html');
+  const filePath = path.resolve(__dirname, '../../public/index.html');
   res.sendFile(filePath);
 });
 
