@@ -2,10 +2,12 @@ const { exec } = require('child_process');
 const app = require('./src/index');
 const config = require('./src/config/env.config');
 const connectDB = require('./src/config/database.config');
+const { connectRedis } = require('./src/config/redisDatabase.config'); // Import the Redis connection function
 
 const startServer = async () => {
   try {
     await connectDB();
+    await connectRedis(); 
 
     const server = app.listen(config.port, () => {
       console.log(
