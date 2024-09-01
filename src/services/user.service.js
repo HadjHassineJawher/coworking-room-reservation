@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/user.repository');
 const CoworkingSpace = require('../models/coworkingSpace.model');
+const { generateToken, generateRefreshToken } = require('../utils/jwt.utils');
+const { client } = require('../config/redisDatabase.config'); 
+
 class UserService {
   async hashPassword(password) {
     try {
@@ -8,6 +11,14 @@ class UserService {
       return await bcrypt.hash(password, salt);
     } catch (error) {
       throw new Error('Error hashing password: ' + error.message);
+    }
+  }
+
+  async comparePassword(providedPassword, storedPassword) {
+    try {
+      return await bcrypt.compare(providedPassword, storedPassword);
+    } catch (error) {
+      throw new Error('Error comparing passwords: ' + error.message);
     }
   }
 
@@ -88,6 +99,63 @@ class UserService {
       return userObject;
     } catch (error) {
       throw new Error('Error updating user: ' + error.message);
+    }
+  }
+
+  async authenticateUser(email, password) {
+    try {
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isMatch = await this.comparePassword(password, user.password);
+      if (!isMatch) {
+        throw new Error('Invalid credentials');
+      }
+
+      const userObject = user.toObject();
+      delete userObject.password;
+
+      // Generate tokens
+      const accessToken = generateToken(userObject);
+      const refreshToken = generateRefreshToken(userObject);
+
+      // Store refresh token in Redis with '7 days' expiration'
+      await client.set(`refreshToken:${userObject._id}`, refreshToken, {
+        EX: 7 * 24 * 60 * 60, 
+      });
+
+      return { user: userObject, accessToken, refreshToken };
+    } catch (error) {
+      throw new Error('Authentication error: ' + error.message);
+    }
+  }
+  
+  async validateRefreshToken(userId, token) {
+    try {
+      const storedToken = await client.get(`refreshToken:${userId}`);
+      if (storedToken && storedToken === token) {
+        const newAccessToken = generateToken({ _id: userId });
+        return { newAccessToken };
+      } else {
+        throw new Error('Invalid refresh token');
+      }
+    } catch (error) {
+      throw new Error('Error validating refresh token: ' + error.message);
+    }
+  }
+
+  async logoutUser(userId) {
+    try {
+      const result = await client.del(`refreshToken:${userId}`);
+      if (result === 1) {
+        console.log('User logged out and refresh token removed');
+      } else {
+        throw new Error('User ID not found in Redis');
+      }
+    } catch (error) {
+      throw new Error('Error logging out user: ' + error.message);
     }
   }
 }
