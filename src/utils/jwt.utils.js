@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../config/env.config');
+const { JWT_SECRET } = require('../config/env.config');
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, email: user.email }, jwt_secret, {
+  return jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
     expiresIn: '15m',
   });
 };
 
 const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user._id }, jwt_secret, { expiresIn: '7d' });
+  return jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
 };
 
 const verifyToken = (token) => {
   try {
-    return jwt.verify(token, jwt_secret);
+    return jwt.verify(token, JWT_SECRET);
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new Error('Token expired');

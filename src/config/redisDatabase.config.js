@@ -3,10 +3,10 @@ const config = require('./env.config');
 
 
 const client = createClient({
-  password: config.redisPassword,
+  password: config.REDIS_PASSWORD,
   socket: {
-    host: config.redisHost,
-    port: config.redisPort,
+    host: config.REDIS_HOST,
+    port: config.REDIS_PORT,
   },
 });
 
