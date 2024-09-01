@@ -15,7 +15,15 @@ const verifyToken = (token) => {
   try {
     return jwt.verify(token, jwt_secret);
   } catch (error) {
-    throw new Error('Invalid token', error);
+    if (error.name === 'TokenExpiredError') {
+      throw new Error('Token expired');
+    }
+
+    if (error.name === 'JsonWebTokenError') {
+      throw new Error('Invalid token');
+    }
+
+    throw new Error('Token verification failed');
   }
 };
 
@@ -27,17 +35,17 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ message: 'No token provided' });
   }
 
-  jwt.verify(token, jwt_secret, (err, user) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: 'Token expired' });
-      }
-      return res.status(403).json({ message: 'Invalid token' });
-    }
-
+  try {
+    const user = verifyToken(token);
     req.user = user;
     next();
-  });
+  } catch (error) {
+    if (error.message === 'Token expired') {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+
+    return res.status(403).json({ message: 'Invalid token' });
+  }
 };
 
 module.exports = {
