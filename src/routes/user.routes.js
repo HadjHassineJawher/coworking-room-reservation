@@ -11,4 +11,7 @@ router.get(
 router.patch('/users/:userId', userController.updateUser);
 router.post('/login', userController.loginUser);
 
+router.post('/logout/:userId', userController.logoutUser); 
+router.post('/refresh-token', userController.refreshToken);
+
 module.exports = router;
