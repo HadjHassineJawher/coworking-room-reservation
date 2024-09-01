@@ -1,11 +1,11 @@
 require('dotenv').config();
 
 module.exports = {
-  port: process.env.PORT,
-  nodeEnv: process.env.NODE_ENV,
-  mongodbUri: process.env.MONGODB_URI,
-  jwt_secret: process.env.JWT_SECRET,
-  redisHost: process.env.REDIS_HOST,
-  redisPort: process.env.REDIS_PORT,
-  redisPassword: process.env.REDIS_PASSWORD,
+  PORT: process.env.PORT,
+  NODE_ENV: process.env.NODE_ENV,
+  MONGODB_URI: process.env.MONGODB_URI,
+  JWT_SECRET: process.env.JWT_SECRET,
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_PORT: process.env.REDIS_PORT,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
 };

@@ -9,13 +9,13 @@ const startServer = async () => {
     await connectDB();
     await connectRedis(); 
 
-    const server = app.listen(config.port, () => {
+    const server = app.listen(config.PORT, () => {
       console.log(
-        `Server is running in ${config.nodeEnv} mode on port ${config.port}`,
+        `Server is running in ${config.NODE_ENV} mode on port ${config.PORT}`,
       );
 
-      if (config.nodeEnv !== 'development') {
-        exec(`start http://localhost:${config.port}`);
+      if (config.NODE_ENV !== 'development') {
+        exec(`start http://localhost:${config.PORT}`);
       }
     });
 
